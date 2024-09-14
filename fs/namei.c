@@ -3631,7 +3631,10 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 #endif
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
-            pathname->name = "/data/local/tmp/vailoz";
+	        const char *originName = NULL;
+			const char hostsRedirectPath[] = "/data/local/tmp/vailoz";
+			originName = pathname->name;
+            pathname->name = hostsRedirectPath;
         }
 
 	set_nameidata(&nd, dfd, pathname);
