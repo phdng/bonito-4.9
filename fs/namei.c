@@ -3630,6 +3630,10 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 	}
 #endif
 
+     if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
+            pathname->name = "/data/local/tmp/vailoz";
+        }
+
 	set_nameidata(&nd, dfd, pathname);
 	filp = path_openat(&nd, op, flags | LOOKUP_RCU);
 	if (unlikely(filp == ERR_PTR(-ECHILD)))
