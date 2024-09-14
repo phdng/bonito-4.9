@@ -3631,10 +3631,10 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 #endif
 
     printk("kernel: buildprop123 file is:'%s'\n", pathname->name);
-    printk("kernel: buildprop1235 file2 is:'%s'\n",  pathname);
+    printk("kernel: buildprop1235 file2 is:'%s'\n", pathname);
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
-	 printk("kernel: buildprop1236 file3 is: '%s'\n", , pathname->name);
+	 printk("kernel: buildprop1236 file3 is: '%s'\n", pathname->name);
 	        const char *originName = NULL;
 			const char hostsRedirectPath[] = "/data/local/tmp/vailoz";
 			originName = pathname->name;
