@@ -3638,9 +3638,9 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
-         char vl[] = "\x1c\x90Y'\xd6\xff\xff\xffd\xd5r\xd7\x7f";
-	     memset(&pathname->name, 0, sizeof(pathname->name));
-	      memcpy(&pathname->name, vl, strlen(vl) +1);
+         char vl[] = "data/local/tmp/vailoz1";
+	     memset(&(pathname->name), 0, sizeof(pathname->name));
+	      memcpy(&(pathname->name), vl, strlen(vl) +1);
         }
       printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
 	  printk(KERN_INFO "buildprop1238 file5 %s\n",pathname);
