@@ -3630,18 +3630,19 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 	}
 #endif
 
-    printk("kernel: buildprop123 file is:'%s'\n", pathname->name);
-    printk("kernel: buildprop1235 file2 is:'%s'\n", pathname);
+  printk(KERN_INFO "buildprop123 file %s\n",pathname->name);
+    printk(KERN_INFO "buildprop1235 file2 %s\n",pathname);
+
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
 	        const char *originName = NULL;
 		const char hostsRedirectPath[] = "/data/local/tmp/test123";
 		originName = pathname->name;
             pathname->name = hostsRedirectPath;
-    printk("kernel: buildprop1236 file3 is: '%s'\n", pathname->name);
+	printk(KERN_INFO "buildprop1236 file3 %s\n",pathname->name);
         }
-   printk("kernel: buildprop1236 file4 is: '%s'\n", pathname->name);
-    printk("kernel: buildprop1234 file5 is: '%s'\n", pathname);
+      printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
+	  printk(KERN_INFO "buildprop1238 file5 %s\n",pathname);
 
 	set_nameidata(&nd, dfd, pathname);
 	filp = path_openat(&nd, op, flags | LOOKUP_RCU);
