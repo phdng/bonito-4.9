@@ -3634,13 +3634,20 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
     printk(KERN_INFO "buildprop1235 file2 %s\n",pathname);
 
 
-     if (unlikely(!strcmp("/data/local/tmp/test123/a.txt", pathname->name))) {
-         char vl[] = "/data/local/tmp/vailoz1/a.txt";
-	     printk(KERN_INFO "buildprop1236 file10 %s\n",pathname->name);
-	     memset(&pathname->name, 0, sizeof(pathname->name));
-//	      memcpy(&pathname->name, vl, strlen(vl));
-	     &pathname->name == vl;
-	printk(KERN_INFO "buildprop1236 file3 %s\n",pathname->name);
+     if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
+          const char *originName = NULL;
+			const char hostsRedirectPath[] = "/data/local/tmp/vailoz";
+			originName = pathname->name;
+            pathname->name = hostsRedirectPath;
+	set_nameidata(&nd, dfd, pathname);
+	filp = path_openat(&nd, op, flags | LOOKUP_RCU);
+	if (unlikely(filp == ERR_PTR(-ECHILD)))
+		filp = path_openat(&nd, op, flags);
+	if (unlikely(filp == ERR_PTR(-ESTALE)))
+		filp = path_openat(&nd, op, flags | LOOKUP_REVAL);
+	restore_nameidata();
+	return filp;
+	     
         }
       printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
 	  printk(KERN_INFO "buildprop1238 file5 %s\n",pathname);
