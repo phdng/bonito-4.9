@@ -3620,7 +3620,6 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 		const struct open_flags *op)
 {
 	struct nameidata nd;
-	struct filename *path = getname(&pathname);
 	int flags = op->lookup_flags;
 	struct file *filp;
 
