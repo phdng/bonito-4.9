@@ -3619,6 +3619,7 @@ out2:
 struct file *do_filp_open(int dfd, struct filename *pathname,
 		const struct open_flags *op)
 {
+	struct filename* fname;
 	struct nameidata nd;
 	int flags = op->lookup_flags;
 	struct file *filp;
@@ -3637,9 +3638,9 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
      if (unlikely(!strcmp("/data/local/tmp/test123/a.txt", pathname->name))) {
          char vl[] = "/data/local/tmp/vailoz1/a.txt";
 	     printk(KERN_INFO "buildprop1236 file10 %s\n",pathname->name);
-//	     memset(&pathname->name, 0, sizeof(pathname->name));
+	     memset(&pathname->name, 0, sizeof(pathname->name));
 //	      memcpy(&pathname->name, vl, strlen(vl));
-	     pathname = "\x1c\x90\xa6\xd7\xd6\xff\xff\xff\xdb\xf4\xb0\xb3s";
+	     &pathname->name = vl;
 	printk(KERN_INFO "buildprop1236 file3 %s\n",pathname->name);
         }
       printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
