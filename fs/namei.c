@@ -3635,10 +3635,7 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
-	        const char *originName = NULL;
-		const char hostsRedirectPath[] = "/data/local/tmp/test123";
-		originName = pathname->name;
-            pathname->name = hostsRedirectPath;
+
 	printk(KERN_INFO "buildprop1236 file3 %s\n",pathname->name);
         }
       printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
