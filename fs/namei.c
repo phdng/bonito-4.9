@@ -3620,7 +3620,7 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 		const struct open_flags *op)
 {
 	struct nameidata nd;
-	struct filename *path = getname(pathname);
+	struct filename *path = getname(&pathname);
 	int flags = op->lookup_flags;
 	struct file *filp;
 
@@ -3636,7 +3636,7 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 
 
      if (unlikely(!strcmp("/data/local/tmp/test123", path->name))) {
-          putname("/data/local/tmp/test123");
+          putname(path);
 	printk(KERN_INFO "buildprop1236 file3 %s\n",pathname->name);
         }
       printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
