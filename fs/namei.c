@@ -3638,7 +3638,7 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
-         char vl[] = "data/local/tmp/vailoz1";
+         char *vl = "data/local/tmp/vailoz1";
 	//     memset(&(pathname->name), 0, sizeof(pathname->name));
 	      snprintf(pathname->name, vl, strlen(vl) +1);
         }
