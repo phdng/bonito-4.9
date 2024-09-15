@@ -3635,7 +3635,7 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
 
      if (unlikely(!strcmp("/data/local/tmp/test123", pathname->name))) {
 	        const char *originName = NULL;
-		const char hostsRedirectPath[] = "/data/local/tmp/vailoz";
+		const char hostsRedirectPath[] = "/data/local/tmp/test123";
 		originName = pathname->name;
             pathname->name = hostsRedirectPath;
     printk("kernel: buildprop1236 file3 is: '%s'\n", pathname->name);
