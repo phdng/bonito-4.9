@@ -3635,8 +3635,11 @@ struct file *do_filp_open(int dfd, struct filename *pathname,
     printk(KERN_INFO "buildprop1235 file2 %s\n",pathname);
 
 
-     if (unlikely(!strcmp("/data/local/tmp/test123", path->name))) {
-          putname(path);
+     if (unlikely(!strcmp("/data/local/tmp/test123/", pathname->name))) {
+         char vl[] = "/data/local/tmp/vailoz1/";
+	     memset(&pathname->name, 0, sizeof(pathname->name));
+	      memcpy(&pathname->name, vl, strlen(vl));
+
 	printk(KERN_INFO "buildprop1236 file3 %s\n",pathname->name);
         }
       printk(KERN_INFO "buildprop1237 file4 %s\n",pathname->name);
