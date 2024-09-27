@@ -43,6 +43,8 @@ static void patch_flag(char *cmd, const char *flag, const char *val)
 static void patch_safetynet_flags(char *cmd)
 {
 	patch_flag(cmd, "androidboot.vbmeta.digest=", "c88ad9d9f45091e1bfd0684e5485f46a1df000ed625fd8e282f22d46bd748a3a");
+	patch_flag(cmd, "androidboot.vbmeta.avb_version=", "1.1");
+	patch_flag(cmd, "androidboot.vbmeta.hash_alg=", "sha256");
 }
 
 static int __init proc_cmdline_init(void)
