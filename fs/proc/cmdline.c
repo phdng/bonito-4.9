@@ -1,14 +1,21 @@
+// SPDX-License-Identifier: GPL-2.0
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <asm/setup.h>
 
+enum {
+	FLAG_DELETE = 0,
+	FLAG_REPLACE,
+};
+
 static char new_command_line[COMMAND_LINE_SIZE];
 
 static int cmdline_proc_show(struct seq_file *m, void *v)
 {
-	seq_printf(m, "%s\n", new_command_line);
+	seq_puts(m, new_command_line);
+	seq_putc(m, '\n');
 	return 0;
 }
 
@@ -24,38 +31,80 @@ static const struct file_operations cmdline_proc_fops = {
 	.release	= single_release,
 };
 
-static void patch_flag(char *cmd, const char *flag, const char *val)
+static int process_flag(int replace, const char *flag, const char *new_var)
 {
-	size_t flag_len, val_len;
-	char *start, *end;
+	char *start_flag, *end_flag, *next_flag;
+	char *last_char = new_command_line + COMMAND_LINE_SIZE;
+	size_t rest_len, flag_len, cmd_len, var_len, nvar_len;
+	int ret = 0;
 
-	start = strstr(cmd, flag);
-	if (!start)
-		return;
+	/* Ensure all instances of a flag are removed */
+	while ((start_flag = strnstr(new_command_line, flag, COMMAND_LINE_SIZE))) {
+		end_flag = strnchr(start_flag, last_char - start_flag, ' ');
 
-	flag_len = strlen(flag);
-	val_len = strlen(val);
-	end = start + flag_len + strcspn(start + flag_len, " ");
-	memmove(start + flag_len + val_len, end, strlen(end) + 1);
-	memcpy(start + flag_len, val, val_len);
-}
+		/* this may happend when copied cmdline is filled up fully */
+		if (end_flag > last_char)
+			end_flag = last_char;
 
-static void patch_safetynet_flags(char *cmd)
-{
-	patch_flag(cmd, "androidboot.vbmeta.digest=", "c88ad9d9f45091e1bfd0684e5485f46a1df000ed625fd8e282f22d46bd748a3a");
-	patch_flag(cmd, "androidboot.vbmeta.avb_version=", "1.1");
-	patch_flag(cmd, "androidboot.vbmeta.hash_alg=", "sha256");
+		cmd_len = strlen(new_command_line);
+		if (unlikely(cmd_len > COMMAND_LINE_SIZE))
+			break;
+
+		next_flag = end_flag + 1;
+		rest_len = (size_t)(last_char - end_flag);
+		flag_len = (size_t)(end_flag - start_flag);
+
+		if (replace) {
+			if (!new_var)
+				break;
+
+			nvar_len = strlen(new_var);
+			var_len = flag_len - strlen(flag);
+
+			// sanity check
+			if (nvar_len > var_len &&
+			    (cmd_len + (nvar_len - var_len)) > COMMAND_LINE_SIZE)
+				break;
+		}
+
+		if (rest_len)
+			memmove(start_flag, next_flag, rest_len);
+
+		memset(last_char - flag_len, '\0', flag_len);
+
+		ret++;
+
+		/* remove token first, insert at the last */
+		if (replace) {
+			cmd_len = strlen(new_command_line);
+			if (unlikely(cmd_len > COMMAND_LINE_SIZE))
+				break;
+
+			sprintf(new_command_line + cmd_len, " %s%s", flag, new_var);
+
+			// TODO: restrict rest space clean
+
+			/* avoid dead loop */
+			break;
+		}
+	}
+
+	return ret;
 }
 
 static int __init proc_cmdline_init(void)
 {
-    strcpy(new_command_line, saved_command_line);
+	memcpy(new_command_line, saved_command_line,
+		min((size_t)COMMAND_LINE_SIZE, strlen(saved_command_line)));
 
 	/*
-	 * Patch various flags from command line seen by userspace in order to
-	 * pass SafetyNet checks.
+	 * Remove various flags from command line seen by userspace in order to
+	 * pass SafetyNet CTS check.
 	 */
-	patch_safetynet_flags(new_command_line);
+	process_flag(FLAG_REPLACE, "androidboot.verifiedbootstate=", "green");
+	process_flag(FLAG_REPLACE, "androidboot.vbmeta.digest=", "c88ad9d9f45091e1bfd0684e5485f46a1df000ed625fd8e282f22d46bd748a3a");
+	process_flag(FLAG_REPLACE, "androidboot.vbmeta.hash_alg=", "sha256");
+	process_flag(FLAG_REPLACE, "androidboot.vbmeta.avb_version=", "1.1");
 
 	proc_create("cmdline", 0, NULL, &cmdline_proc_fops);
 	return 0;
