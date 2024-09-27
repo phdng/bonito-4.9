@@ -101,7 +101,6 @@ static int __init proc_cmdline_init(void)
 	 * Remove various flags from command line seen by userspace in order to
 	 * pass SafetyNet CTS check.
 	 */
-	process_flag(FLAG_REPLACE, "androidboot.verifiedbootstate=", "green");
 	process_flag(FLAG_REPLACE, "androidboot.vbmeta.digest=", "c88ad9d9f45091e1bfd0684e5485f46a1df000ed625fd8e282f22d46bd748a3a");
 	process_flag(FLAG_REPLACE, "androidboot.vbmeta.hash_alg=", "sha256");
 	process_flag(FLAG_REPLACE, "androidboot.vbmeta.avb_version=", "1.1");
